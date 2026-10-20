@@ -1,0 +1,21 @@
+name: 'Convert Coverity scan results to SARIF'
+description: 'Convert Coverity format-errors JSON results to SARIF 2.1.0'
+inputs:
+  pipeline-results-json:
+    description: 'Path to the Coverity JSON results file'
+    required: true
+    default: 'results.json'
+  output-results-sarif:
+    description: 'Path for the generated SARIF file'
+    required: true
+    default: 'coverity-results.sarif'
+runs:
+  using: 'composite'
+  steps:
+    - name: Convert Coverity scan results to SARIF
+      shell: bash
+      env:
+        PYTHONPATH: ${{ github.action_path }}/python/src
+        INPUT_RESULTS_JSON: ${{ inputs.pipeline-results-json }}
+        OUTPUT_RESULTS_SARIF: ${{ inputs.output-results-sarif }}
+      run: python -m coverity_sarif "$INPUT_RESULTS_JSON" "$OUTPUT_RESULTS_SARIF"
